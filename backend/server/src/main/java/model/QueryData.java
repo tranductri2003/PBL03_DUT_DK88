@@ -3,13 +3,62 @@ package model;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class QueryData {
 
+//	public static ResponseObject updateUserPassWord(String token, String oldPass, String newPass) {
+//		String checkUserPermissionSQL = "SELECT * FROM NUser WHERE token = ? AND passWord = ?";
+//		HashMap<Integer, Object> params = new HashMap();
+//		params.put(1, token);
+//		params.put(2, oldPass);
+//		DatabaseHelper.getInstance().setQuery(checkUserPermissionSQL, params);
+//		try {
+//			if (!DatabaseHelper.getInstance().readData().next())
+//				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "!", null);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	public static ResponseObject updateProfile(String token, String name, String phoneNumber, String email) {
+//		
+//	}
+	
+	public static ResponseObject isValidProfile(User user, String pass) {
+		if (pass == null || pass.length() == 0)
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Password is empty!", null);
+		if (user.getName() == null || user.getName().length() == 0)
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Name is empty!", null);
+		if (user.getPhoneNumber() == null || user.getPhoneNumber().length() == 0)
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "PhoneNumber is empty!", null);;
+		if (user.getUserName() == null || user.getUserName().length() == 0)
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Username is empty!", null);;
+		if (user instanceof Student) {
+			Student tmp = (Student) user;
+			if (tmp.getStudentID() == null || tmp.getStudentID().length() == 0)
+				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Student ID is empty!", null);;
+		} else if (user instanceof Admin) {
+			Admin tmp = (Admin) user;
+			String regex = "^(.+)@(.+)$";
+			Pattern pattern = Pattern.compile(regex); 
+			if (tmp.getEmail() == null || tmp.getEmail().length() == 0 || !pattern.matcher(tmp.getEmail()).matches())
+				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Email is not valid!", null);;
+		} else {
+			// ...
+		}
+		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
+	}
+	
 	public static ResponseObject insertStudent(String userName, String hashPass, String studentID, String name,
 			String phoneNumber) {
 		try {
 			Student student = new Student(userName, name, phoneNumber, studentID, Student.STATUS_NEW_USER);
+			ResponseObject tmp = isValidProfile(student, hashPass);
+			if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
+				return tmp;
 			String checkUserExistSQL = "SELECT * FROM NUser WHERE userName = ?";
 			HashMap<Integer, Object> params = new HashMap();
 			params.put(1, userName);

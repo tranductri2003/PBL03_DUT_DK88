@@ -47,4 +47,15 @@ public class UserController {
 				.body(QueryData.readUserInfo(userName, hashPass));
 	}
 	
+//	@PostMapping("/EditProfile")
+//	ResponseEntity<ResponseObject> editProfile(@RequestBody Map<String, Object> body) {
+//		String userName = (String) body.get("userName");
+//		String hashPass = (String) body.get("hashPass");
+//		String studentID = (String) body.get("studentID");
+//		String name = (String) body.get("name");
+//		String phoneNumber = (String) body.get("phoneNumber");
+//		return ResponseEntity.status(HttpStatus.OK)
+//				.body(QueryData.insertStudent(userName, hashPass, studentID, name, phoneNumber));
+//	}
+	
 }
