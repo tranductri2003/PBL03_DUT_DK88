@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import model.DataHasher;
 import model.DatabaseHelper;
 import model.QueryData;
 import model.ResponseObject;
@@ -20,9 +21,11 @@ import model.Student;
 public class UserController {
 	
 	@GetMapping("")
-	String testCon() {
+	String test() {
 		DatabaseHelper.getInstance();
-		return "OK";
+		String tmp1 = DataHasher.hash("secuoikhanh10namnua");
+		String tmp2 = DataHasher.hash("192e6996a7fd84accb7e7f85f92bc6877f7c87680180b3da16bf7e77d94e464c");
+		return tmp1 + " " + tmp2;
 	}
 	
 	@PostMapping("/CreateAccount")
@@ -41,7 +44,7 @@ public class UserController {
 		String userName = (String) body.get("userName");
 		String hashPass = (String) body.get("hashPass");
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(QueryData.readStudent(userName, hashPass));
+				.body(QueryData.readUserInfo(userName, hashPass));
 	}
 	
 }

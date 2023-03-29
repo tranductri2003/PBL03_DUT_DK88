@@ -1,9 +1,14 @@
 package model;
 
 public class User {
+	
+	public static final String USER_TYPE_ADMIN = "ADMIN";
+	public static final String USER_TYPE_STUDENT = "STUDENT";
+	
 	private String userName;
 	private String name;
 	private String phoneNumber;
+	private String token;
 	
 	public User() {
 		super();
@@ -14,6 +19,7 @@ public class User {
 		this.userName = userName;
 		this.name = name;
 		this.phoneNumber = phoneNumber;
+		this.token = DataHasher.hash(userName, name, phoneNumber);
 	}
 
 	public String getUserName() {
@@ -39,5 +45,21 @@ public class User {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String userName, String name, String phoneNumber) {
+		this.token = DataHasher.hash(userName, name, phoneNumber);
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return super.toString();
+	}
+	
+	
 	
 }

@@ -5,26 +5,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class Admin extends User {
-	private String adminToken;
 	private String email;
 	
 	public Admin() {
 		super();
 	}
 
-	public Admin(String adminToken, String email) {
+	public Admin(String email) {
 		super();
-		this.adminToken = adminToken;
 		this.email = email;
-	}
-	
-
-	public String getAdminToken() {
-		return adminToken;
-	}
-
-	public void setAdminToken(String adminToken) {
-		this.adminToken = adminToken;
 	}
 
 	public String getEmail() {
