@@ -50,8 +50,8 @@ public class User {
 		return token;
 	}
 
-	public void setToken(String userName, String name, String phoneNumber) {
-		this.token = DataHasher.hash(userName, name, phoneNumber);
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 	@Override

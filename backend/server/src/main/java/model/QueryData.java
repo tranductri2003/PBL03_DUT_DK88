@@ -114,6 +114,7 @@ public class QueryData {
 				res.setName(rs.getString("name"));
 				res.setPhoneNumber(rs.getString("phoneNumber"));
 				res.setEmail(rs.getString("email"));
+				res.setToken(rs.getString("token"));
 				String pass = rs.getString("passWord");
 				if (!pass.equals(DataHasher.hash(hashPass)))
 					return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Incorrect password!", null);
@@ -142,6 +143,7 @@ public class QueryData {
 				res.setStudentID(rs.getString("studentID"));
 				res.setName(rs.getString("name"));
 				res.setPhoneNumber(rs.getString("phoneNumber"));
+				res.setToken(rs.getString("token"));
 				res.setStatus(rs.getInt("status"));
 				String pass = rs.getString("passWord");
 				if (!pass.equals(DataHasher.hash(hashPass)))
