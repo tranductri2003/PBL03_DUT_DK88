@@ -27,13 +27,6 @@ CREATE TABLE Admin
 	email varchar(100)
 );
 
-CREATE TABLE USER_CLASS (
-	studentID varchar(20) FOREIGN KEY REFERENCES Student(studentID),
-	classID varchar(20),
-	have bit,
-	CONSTRAINT PK_USER_CLASS PRIMARY KEY (studentID, classID)
-);
-
 CREATE TABLE Request (
 	requestID int IDENTITY(1, 1) PRIMARY KEY,
 	targetID varchar(20) FOREIGN KEY REFERENCES Student(studentID),
