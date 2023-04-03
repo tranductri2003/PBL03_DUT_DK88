@@ -11,8 +11,6 @@ public class Student extends User {
 
 	private String studentID;
 	private Integer status;
-	private List<String> haveClass;
-	private String needClass;
 	
 	public static final int STATUS_NEW_USER = 0;
 	public static final int STATUS_ACTIVE_USER = 1;
@@ -20,23 +18,12 @@ public class Student extends User {
 	
 	public Student() {
 		super();
-		haveClass = new ArrayList<>();
 	}
 	
 	public Student(String userName, String name, String phoneNumber, String studentID, Integer status) {
 		super(userName, name, phoneNumber);
 		this.studentID = studentID;
 		this.status = status;
-		this.haveClass = new ArrayList<>();
-		this.needClass = new String();
-	}
-
-	public Student(String userName, String name, String phoneNumber, String studentID, Integer status, List<String> haveClass, String needClass) {
-		super(userName, name, phoneNumber);
-		this.studentID = studentID;
-		this.status = status;
-		this.haveClass = haveClass;
-		this.needClass = needClass;
 	}
 	
 	public String getStudentID() {
@@ -53,26 +40,6 @@ public class Student extends User {
 
 	public void setStatus(Integer status) {
 		this.status = status;
-	}
-
-	public List<String> getHaveClass() {
-		return haveClass;
-	}
-	
-	public void addHaveClass(String classID) {
-		haveClass.add(classID);
-	}
-
-	public void setHaveClass(List<String> haveClass) {
-		this.haveClass = haveClass;
-	}
-
-	public String getNeedClass() {
-		return needClass;
-	}
-
-	public void setNeedClass(String needClass) {
-		this.needClass = needClass;
 	}
 
 	@Override

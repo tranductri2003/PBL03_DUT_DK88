@@ -149,19 +149,6 @@ public class QueryData {
 				if (!pass.equals(DataHasher.hash(hashPass)))
 					return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Incorrect password!", null);
 			}
-			String readHaveAndWantClassSQL = "SELECT * FROM USER_CLASS WHERE studentID = ?";
-			params.clear();
-			params.put(1, res.getStudentID());
-			DatabaseHelper.getInstance().setQuery(readHaveAndWantClassSQL, params);
-			rs = DatabaseHelper.getInstance().readData();
-			while (rs.next()) {
-				String classID = rs.getString("classID");
-				Boolean isHave = rs.getBoolean("have");
-				if (isHave)
-					res.addHaveClass(classID);
-				else
-					res.setNeedClass(classID);
-			}
 			return new ResponseObject(ResponseObject.RESPONSE_OK, "Login success!", res);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -237,15 +224,11 @@ public class QueryData {
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
 	}
 
-	public static ResponseObject readUserInfo(String userName, String hashPass) {
+	public static ResponseObject readUserInfo(String userName, String hashPass, String roleCode) {
 
-		ResponseObject tmp = getUserRoleByUserName(userName);
-		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
-			return tmp;
-		String userType = tmp.getData().toString();
-		if (userType.equals(User.USER_TYPE_ADMIN))
+		if (roleCode.equals(User.USER_TYPE_ADMIN))
 			return readAdminInfo(userName, hashPass);
-		else if (userType.equals(User.USER_TYPE_STUDENT))
+		else if (roleCode.equals(User.USER_TYPE_STUDENT))
 			return readStudentInfo(userName, hashPass);
 		else {
 			// new role in future..
