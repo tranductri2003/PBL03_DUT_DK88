@@ -2,6 +2,7 @@ package controller;
 
 import java.util.Map;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,17 +42,22 @@ public class UserController {
 				.body(QueryData.insertStudent(userName, hashPass, studentID, name, phoneNumber));
 	}
 	
-	@GetMapping("/Role/{UserName}")
-	ResponseEntity<ResponseObject> getRole(@PathVariable("UserName") String userName) {
-		return ResponseEntity.status(HttpStatus.OK)
-				.body(QueryData.getUserRoleByUserName(userName));
-	}
+//	@GetMapping("/Role/{UserName}")
+//	ResponseEntity<ResponseObject> getRole(@PathVariable("UserName") String userName) {
+//		return ResponseEntity.status(HttpStatus.OK)
+//				.body(QueryData.getUserRoleByUserName(userName));
+//	}
 	
-	@PostMapping("/Login/{RoleCode}")
-	ResponseEntity<ResponseObject> login(@PathVariable("RoleCode") String roleCode, @RequestBody Map<String, Object> body) {
+	@PostMapping("/Login")
+	ResponseEntity<ResponseObject> login(@RequestBody Map<String, Object> body) {
 		String userName = (String) body.get("userName");
 		String hashPass = (String) body.get("hashPass");
+		ResponseObject tmp = QueryData.getUserRoleByUserName(userName);
+		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
+			return ResponseEntity.status(HttpStatus.OK).body(tmp);
+		String roleCode = tmp.getData().toString();
 		return ResponseEntity.status(HttpStatus.OK)
+				.header("UserRole", roleCode)
 				.body(QueryData.readUserInfo(userName, hashPass, roleCode));
 	}
 	
