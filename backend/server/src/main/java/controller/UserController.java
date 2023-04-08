@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import model.DataHandler;
 import model.DataHasher;
 import model.DatabaseHelper;
-import model.QueryData;
 import model.ResponseObject;
 import model.Student;
 
@@ -39,26 +39,15 @@ public class UserController {
 		String name = (String) body.get("name");
 		String phoneNumber = (String) body.get("phoneNumber");
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(QueryData.insertStudent(userName, hashPass, studentID, name, phoneNumber));
+				.body(DataHandler.insertStudent(userName, hashPass, studentID, name, phoneNumber));
 	}
-	
-//	@GetMapping("/Role/{UserName}")
-//	ResponseEntity<ResponseObject> getRole(@PathVariable("UserName") String userName) {
-//		return ResponseEntity.status(HttpStatus.OK)
-//				.body(QueryData.getUserRoleByUserName(userName));
-//	}
 	
 	@PostMapping("/Login")
 	ResponseEntity<ResponseObject> login(@RequestBody Map<String, Object> body) {
 		String userName = (String) body.get("userName");
 		String hashPass = (String) body.get("hashPass");
-		ResponseObject tmp = QueryData.getUserRoleByUserName(userName);
-		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
-			return ResponseEntity.status(HttpStatus.OK).body(tmp);
-		String roleCode = tmp.getData().toString();
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("UserRole", roleCode)
-				.body(QueryData.readUserInfo(userName, hashPass, roleCode));
+				.body(DataHandler.readUserInfo(userName, hashPass));
 	}
 	
 //	@PostMapping("/EditProfile")

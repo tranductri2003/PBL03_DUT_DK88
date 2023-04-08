@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.io.FilenameUtils;
@@ -39,9 +40,9 @@ public class FileHandler {
 	}
 	
 	public ResponseObject saveImage(MultipartFile file, String token) {
-		ResponseObject tmp = QueryData.getUserRoleByToken(token);
-		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
-			return tmp;
+		if (!TokenProvider.isValidToken(token))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to upload file!", null);
+		Map<String, Object> data_token = TokenProvider.getDataFromToken(token);
 		if (file.isEmpty())
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File not found", null);
 		if (file.getSize() / (1e6) > 5.0)
@@ -57,7 +58,7 @@ public class FileHandler {
 			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with file system in server!", null);
 		try {
 			Files.copy(file.getInputStream(), finalFilePath, StandardCopyOption.REPLACE_EXISTING);
-			tmp  = QueryData.insertImage(fileName, token);
+			ResponseObject tmp  = DataHandler.insertImage(fileName, data_token.get("userName").toString());
 			if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
 				return tmp;
 			return new ResponseObject(ResponseObject.RESPONSE_OK, "File upload successfully!", fileName);
@@ -69,16 +70,8 @@ public class FileHandler {
 	}
 	
 	public ResponseObject loadImage(String fileName, String token) {
-		ResponseObject tmp = QueryData.getUserRoleByToken(token);
-		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
-			return tmp;
-		if (!tmp.getData().toString().equals(User.USER_TYPE_ADMIN)) {
-			tmp = QueryData.getImageOwner(fileName);
-			if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
-				return tmp;
-			if (!tmp.getData().toString().equals(token))
-				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to access this file!", null);
-		}
+		if (!TokenProvider.isValidToken(token))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to load file!", null);
 		if (!isImage(FilenameUtils.getExtension(fileName)))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File is not image", null);
 		try {

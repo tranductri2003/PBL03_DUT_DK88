@@ -20,12 +20,12 @@ public class Student extends User {
 		super();
 	}
 	
-	public Student(String userName, String name, String phoneNumber, String studentID, Integer status) {
-		super(userName, name, phoneNumber);
+	public Student(String userName, String name, String phoneNumber, String token, String studentID, Integer status) {
+		super(userName, name, phoneNumber, token, User.ROLE_CODE_STUDENT);
 		this.studentID = studentID;
 		this.status = status;
 	}
-	
+
 	public String getStudentID() {
 		return studentID;
 	}
@@ -41,17 +41,6 @@ public class Student extends User {
 	public void setStatus(Integer status) {
 		this.status = status;
 	}
-
-	@Override
-	public String toString() {
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		try {
-			return ow.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			
-		}
-		return "";
-		
-	}
+	
 	
 }

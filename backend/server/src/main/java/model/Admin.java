@@ -11,8 +11,8 @@ public class Admin extends User {
 		super();
 	}
 
-	public Admin(String email) {
-		super();
+	public Admin(String userName, String name, String phoneNumber, String token, String email) {
+		super(userName, name, phoneNumber, token, User.ROLE_CODE_ADMIN);
 		this.email = email;
 	}
 
@@ -23,19 +23,6 @@ public class Admin extends User {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	@Override
-	public String toString() {
-		ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-		try {
-			return ow.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-		return "";
-		
-	}
-	
 	
 	
 }

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class DataHasher {
 
-	private static final String SECRET_STR = "UyYeuKhanh";
+	private static final String SECRET_STR = "|UyYeuKhanh|KhanhManhMeDeThuong|secuoiKhanh10namnua|";
 
 	private static byte[] getSHA(String input) {
 		try {
@@ -35,5 +35,5 @@ public class DataHasher {
 		}
 		return toHexString(getSHA(tmp.toString()));
 	}
-
+	
 }
