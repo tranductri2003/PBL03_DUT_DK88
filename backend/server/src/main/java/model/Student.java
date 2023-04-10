@@ -20,10 +20,16 @@ public class Student extends User {
 		super();
 	}
 	
-	public Student(String userName, String name, String phoneNumber, String token, String studentID, Integer status) {
-		super(userName, name, phoneNumber, token, User.ROLE_CODE_STUDENT);
+	public Student(String userName, String name, String phoneNumber, String studentID, Integer status) {
+		super(userName, name, phoneNumber, User.ROLE_CODE_STUDENT);
 		this.studentID = studentID;
 		this.status = status;
+	}
+	
+	public Student(String userName, String name, String phoneNumber, String studentID) {
+		super(userName, name, phoneNumber, User.ROLE_CODE_STUDENT);
+		this.studentID = studentID;
+		this.status = STATUS_NEW_USER;
 	}
 
 	public String getStudentID() {

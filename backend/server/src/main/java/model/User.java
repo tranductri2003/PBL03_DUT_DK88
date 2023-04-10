@@ -8,19 +8,17 @@ public class User {
 	private String userName;
 	private String name;
 	private String phoneNumber;
-	private String token;
 	private Integer roleCode;
 	
 	public User() {
 		super();
 	}
 
-	public User(String userName, String name, String phoneNumber, String token, Integer roleCode) {
+	public User(String userName, String name, String phoneNumber, Integer roleCode) {
 		super();
 		this.userName = userName;
 		this.name = name;
 		this.phoneNumber = phoneNumber;
-		this.token = token;
 		this.roleCode = roleCode;
 	}
 
@@ -46,14 +44,6 @@ public class User {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
 	}
 
 	public Integer getRoleCode() {

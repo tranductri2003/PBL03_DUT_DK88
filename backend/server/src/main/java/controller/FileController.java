@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import model.FileHandler;
 import model.ResponseObject;
+import service.FileService;
 
 @RestController
 @RequestMapping(path = "/api/v1/File")
@@ -29,13 +29,13 @@ public class FileController {
 	@PostMapping("/UploadImage")
 	ResponseEntity<ResponseObject> uploadFile(@RequestHeader("token") String token, @RequestParam("file") MultipartFile file) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(FileHandler.getInstance().saveImage(file, token));
+				.body(FileService.getInstance().saveImage(file, token));
 	}
 	
 	@GetMapping("/GetImage/{fileName:.+}")
 	ResponseEntity<ResponseObject> getImage(@RequestHeader("token") String token, @PathVariable String fileName) {
 		return ResponseEntity.status(HttpStatus.OK)
-				.body(FileHandler.getInstance().loadImage(fileName, token));
+				.body(FileService.getInstance().loadImage(fileName, token));
 	}
 	
 }

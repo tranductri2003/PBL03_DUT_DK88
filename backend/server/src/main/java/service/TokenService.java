@@ -1,4 +1,4 @@
-package model;
+package service;
 
 import java.security.Key;
 import java.util.Date;
@@ -9,7 +9,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 
-public class TokenProvider {
+public class TokenService {
 	
 	private static final String SECRET_STR = 
 			"Anh thường hay vẩn vơ về một người "
@@ -58,7 +58,7 @@ public class TokenProvider {
 	}
 	
 	private static Key getSignKey() {
-		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(DataHasher.hash(SECRET_STR)));
+		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(HashService.hash(SECRET_STR)));
 	}
 	
 }

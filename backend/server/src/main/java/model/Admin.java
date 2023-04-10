@@ -11,8 +11,8 @@ public class Admin extends User {
 		super();
 	}
 
-	public Admin(String userName, String name, String phoneNumber, String token, String email) {
-		super(userName, name, phoneNumber, token, User.ROLE_CODE_ADMIN);
+	public Admin(String userName, String name, String phoneNumber, String email) {
+		super(userName, name, phoneNumber, User.ROLE_CODE_ADMIN);
 		this.email = email;
 	}
 
