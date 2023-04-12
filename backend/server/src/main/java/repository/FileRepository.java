@@ -37,4 +37,12 @@ public class FileRepository {
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
 	}
 	
+	public static void delImageIfExist(String fileName) {
+		String delImageSQL = "DELETE FROM Image WHERE fileName = ?";
+		HashMap<Integer, Object> params = new HashMap();
+		params.put(1, fileName);
+		DatabaseHelper.getInstance().setQuery(delImageSQL, params);
+		DatabaseHelper.getInstance().updateData();
+	}
+	
 }

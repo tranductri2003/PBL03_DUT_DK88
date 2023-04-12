@@ -17,6 +17,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import model.ResponseObject;
+import model.User;
 import repository.FileRepository;
 
 public class FileService {
@@ -75,6 +76,12 @@ public class FileService {
 	public ResponseObject loadImage(String fileName, String token) {
 		if (!TokenService.isValidToken(token))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to load file!", null);
+//		Map<String, Object> token_data = TokenService.getDataFromToken(token);
+//		ResponseObject tmp = FileRepository.getImageOwner(fileName);
+//		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
+//			return tmp;
+//		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")) && !token_data.get("userName").toString().equals(tmp.getData().toString()))
+//			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to upload file!", null);
 		if (!isImage(FilenameUtils.getExtension(fileName)))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File is not image", null);
 		try {
@@ -86,6 +93,27 @@ public class FileService {
 			}
 			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with file system in server!", null); 
 		} catch (IOException e) { }
+		return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with file system in server!", null);
+	}
+	
+	public ResponseObject delImageIfExist(String fileName, String token) {
+		if (!TokenService.isValidToken(token))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to load file!", null);
+		Map<String, Object> token_data = TokenService.getDataFromToken(token);
+		ResponseObject tmp = FileRepository.getImageOwner(fileName);
+		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
+			return tmp;
+		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")) && !token_data.get("userName").toString().equals(tmp.getData().toString()))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to delete file!", null);
+		FileRepository.delImageIfExist(fileName);
+		Path file = PATH.resolve(fileName);
+		try {
+			Files.deleteIfExists(file);
+			return new ResponseObject(ResponseObject.RESPONSE_OK, "Delete file successfully!", null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with file system in server!", null);
 	}
 	

@@ -16,12 +16,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import model.ResponseObject;
 import service.FileService;
+import service.TokenService;
 
 @RestController
 @RequestMapping(path = "/api/v1/File")
 public class FileController {
 	
-	@GetMapping("")
+	@GetMapping("/")
 	String test() {
 		return "OK";
 	}
@@ -29,13 +30,22 @@ public class FileController {
 	@PostMapping("/UploadImage")
 	ResponseEntity<ResponseObject> uploadFile(@RequestHeader("token") String token, @RequestParam("file") MultipartFile file) {
 		return ResponseEntity.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(FileService.getInstance().saveImage(file, token));
 	}
 	
 	@GetMapping("/GetImage/{fileName:.+}")
 	ResponseEntity<ResponseObject> getImage(@RequestHeader("token") String token, @PathVariable String fileName) {
 		return ResponseEntity.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(FileService.getInstance().loadImage(fileName, token));
 	}
+	
+//	@GetMapping("/DelImage/{fileName:.+}")
+//	ResponseEntity<ResponseObject> delImage(@RequestHeader("token") String token, @PathVariable String fileName) {
+//		return ResponseEntity.status(HttpStatus.OK)
+//				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+//				.body(FileService.getInstance().delImageIfExist(fileName, token));
+//	}
 	
 }

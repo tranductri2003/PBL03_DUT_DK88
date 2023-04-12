@@ -3,11 +3,9 @@ package controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -60,8 +58,12 @@ public class UserController {
 				body.get("phoneNumber").toString(),
 				body.get("email").toString()
 		);
+		ResponseObject tmp = UserService.createAdminAccount(admin, hashPass, token);
+		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
+			return ResponseEntity.status(HttpStatus.OK).body(tmp);
 		return ResponseEntity
 				.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.createAdminAccount(admin, hashPass, token));
 	}
 	
@@ -86,9 +88,34 @@ public class UserController {
 				.body(tmp);
 	}
 	
-//	@PostMapping("/RequestActive")
-//	ResponseEntity<ResponseObject> requestActive() {
-//		
-//	}
+	@PostMapping("/ChangePassword")
+	ResponseEntity<ResponseObject> changePassword(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
+		String userName = (String) body.get("userName");
+		String oldHashPass = (String) body.get("oldHashPass");
+		String newHashPass = (String) body.get("newHashPass");
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+				.body(UserService.changePassword(token, userName, oldHashPass, newHashPass));
+	}
+	
+	@PostMapping("/ChangePublicInfo")
+	ResponseEntity<ResponseObject> changePublicInfo(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
+		String userName = (String) body.get("userName");
+		String name = (String) body.get("name");
+		String phoneNumber = (String) body.get("phoneNumber");
+		Integer roleCode = (Integer) body.get("roleCode");
+		if (roleCode.equals(User.ROLE_CODE_ADMIN)) {
+			String email = (String) body.get("email");
+			return ResponseEntity
+					.status(HttpStatus.OK)
+					.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+					.body(UserService.changePublicInfo(token, new Admin(userName, name, phoneNumber, email)));
+		}
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+				.body(UserService.changePublicInfo(token, new User(userName, name, phoneNumber, roleCode)));
+	}
 	
 }

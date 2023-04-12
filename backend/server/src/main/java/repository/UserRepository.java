@@ -157,5 +157,40 @@ public class UserRepository {
 		return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
 	}
 	
+	public static ResponseObject updatePassword(String userName, String newDoubleHashPass) {
+		String updatePassSQL = "UPDATE NUser SET passWord = ? WHERE userName = ?";
+		HashMap<Integer, Object> params = new HashMap();
+		params.clear();
+		params.put(1, newDoubleHashPass);
+		params.put(2, userName);
+		DatabaseHelper.getInstance().setQuery(updatePassSQL, params);
+		if (!DatabaseHelper.getInstance().updateData())
+			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		return new ResponseObject(ResponseObject.RESPONSE_OK, "Password update successfully!", null);
+	}
+	
+	public static ResponseObject updatePublicInfo(User user) {
+		String updateUserInfoSQL = "UPDATE NUser SET name = ?, phoneNumber = ? WHERE userName = ?";
+		HashMap<Integer, Object> params = new HashMap();
+		params.clear();
+		params.put(1, user.getName());
+		params.put(2, user.getPhoneNumber());
+		params.put(3, user.getUserName());
+		DatabaseHelper.getInstance().setQuery(updateUserInfoSQL, params);
+		if (!DatabaseHelper.getInstance().updateData())
+			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		if (user.getRoleCode().equals(User.ROLE_CODE_ADMIN)) {
+			Admin admin = (Admin) user;
+			String updateAdminInfoSQL = "UPDATE Admin SET email = ? WHERE userName = ?";
+			params.clear();
+			params.put(1, admin.getEmail());
+			params.put(2, admin.getUserName());
+			DatabaseHelper.getInstance().setQuery(updateUserInfoSQL, params);
+			if (!DatabaseHelper.getInstance().updateData())
+				return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		}
+		return new ResponseObject(ResponseObject.RESPONSE_OK, "Public info update successfully!", null);
+	}
+	
 	
 }
