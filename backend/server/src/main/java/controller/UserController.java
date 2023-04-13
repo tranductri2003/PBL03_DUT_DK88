@@ -81,6 +81,7 @@ public class UserController {
 		if (user instanceof Student) {
 			Student student = (Student) user;
 			token_data.put("status", student.getStatus());
+			token_data.put("studentID", student.getStudentID());
 		}
 		return ResponseEntity
 				.status(HttpStatus.OK)

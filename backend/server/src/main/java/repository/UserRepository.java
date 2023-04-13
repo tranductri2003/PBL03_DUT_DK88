@@ -40,6 +40,23 @@ public class UserRepository {
 		return false;
 	}
 	
+	public static Boolean isStudentActive(String studentID) {
+		String checkStudentActiveSQL = "SELECT status FROM Student WHERE studentID = ?";
+		HashMap<Integer, Object> params = new HashMap();
+		params.put(1, studentID);
+		DatabaseHelper.getInstance().setQuery(checkStudentActiveSQL, params);
+		try {
+			ResultSet tmp = DatabaseHelper.getInstance().readData();
+			tmp.next();
+			Integer status = tmp.getInt("status");
+			return status.equals(Student.STATUS_ACTIVE_USER);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public static ResponseObject createAccount(User user, String hashPass) {
 		String createAccountSQL = "INSERT INTO NUser VALUES (?, ?, ?, ?, ?)";
 		HashMap<Integer, Object> params = new HashMap();

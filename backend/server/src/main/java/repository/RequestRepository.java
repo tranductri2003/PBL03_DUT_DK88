@@ -66,7 +66,7 @@ public class RequestRepository {
 		if (!DatabaseHelper.getInstance().updateData())
 			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
 		for (String fileName : request.getImageProof()) {
-			String saveImageProofSQL = "INSERT INTO ImageProof VALUES (?, ?)";
+			String saveImageProofSQL = "INSERT INTO ImageRequest VALUES (?, ?)";
 			params.clear();
 			params.put(1, request.getRequestID());
 			params.put(2, fileName);

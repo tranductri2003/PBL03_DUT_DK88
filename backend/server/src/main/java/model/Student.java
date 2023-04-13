@@ -12,9 +12,9 @@ public class Student extends User {
 	private String studentID;
 	private Integer status;
 	
-	public static final int STATUS_NEW_USER = 0;
-	public static final int STATUS_ACTIVE_USER = 1;
-	public static final int STATUS_BAN_USER = 2;
+	public static final Integer STATUS_NEW_USER = 0;
+	public static final Integer STATUS_ACTIVE_USER = 1;
+	public static final Integer STATUS_BAN_USER = 2;
 	
 	public Student() {
 		super();
