@@ -1,11 +1,12 @@
 USE DK88;
 
-DROP TABLE ImageProof;
+DROP TABLE ActiveRequest;
+DROP TABLE ImageRequest;
 DROP TABLE Image;
 DROP TABLE BanRequest;
-DROP TABLE ActiveRequest;
 DROP TABLE Request;
+DROP TABLE StudentClass;
+DROP TABLE QueryClass;
 DROP TABLE Student;
 DROP TABLE Admin;
 DROP TABLE NUser;
-DROP TABLE USER_TYPE;

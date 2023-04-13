@@ -1,42 +1,43 @@
 use DK88;
 
-CREATE TABLE USER_TYPE (
-	token varchar(66) PRIMARY KEY,
-	type_code varchar(22)
-)
-
 CREATE TABLE NUser 
 (
 	userName varchar(100) PRIMARY KEY,
 	passWord varchar(100),
 	name nvarchar(100),
 	phoneNumber varchar(20),
-	token varchar(66) unique not null FOREIGN KEY REFERENCES USER_TYPE(token)
+	roleCode int
 );
 
 CREATE TABLE Student 
 (
-	userName varchar(100) FOREIGN KEY REFERENCES NUser(userName),
-	studentID varchar(20) PRIMARY KEY,
+	userName varchar(100) PRIMARY KEY FOREIGN KEY REFERENCES NUser(userName),
+	studentID varchar(20) unique not null,
 	status int
 );
 
+CREATE TABLE QueryClass (
+	idQuery int IDENTITY(1, 1) PRIMARY KEY,
+	targetID varchar(20) unique FOREIGN KEY REFERENCES Student(studentID)
+)
+
+CREATE TABLE StudentClass (
+	studentID varchar(20) FOREIGN KEY REFERENCES QueryClass(targetID),
+	classID varchar(33),
+	have bit,
+	CONSTRAINT PK_SC PRIMARY KEY (studentID, classID)
+)
+
 CREATE TABLE Admin 
 (
-	userName varchar(100) FOREIGN KEY REFERENCES NUser(userName),
+	userName varchar(100) PRIMARY KEY FOREIGN KEY REFERENCES NUser(userName),
 	email varchar(100)
 );
 
 CREATE TABLE Request (
 	requestID int IDENTITY(1, 1) PRIMARY KEY,
 	targetID varchar(20) FOREIGN KEY REFERENCES Student(studentID),
-	messageRequest nvarchar(100)
-)
-
-CREATE TABLE ActiveRequest (
-	requestID int PRIMARY KEY FOREIGN KEY REFERENCES Request(requestID),
-	imageFront varchar(100),
-	imageBack varchar(100),
+	requestCode int
 )
 
 CREATE TABLE BanRequest (
@@ -46,12 +47,18 @@ CREATE TABLE BanRequest (
 
 CREATE TABLE Image (
 	fileName varchar(100) PRIMARY KEY,
-	token varchar(66) FOREIGN KEY REFERENCES NUser(token)
+	owner varchar(100) FOREIGN KEY REFERENCES NUser(userName)
 )
 
-CREATE TABLE ImageProof (
+CREATE TABLE ImageRequest (
 	requestID int FOREIGN KEY REFERENCES BanRequest(requestID),
 	fileName varchar(100) FOREIGN KEY REFERENCES Image(fileName),
 	CONSTRAINT PK_IP PRIMARY KEY (requestID, fileName)
+)
+
+CREATE TABLE ActiveRequest (
+	requestID int PRIMARY KEY FOREIGN KEY REFERENCES Request(requestID),
+	imageFront varchar(100) FOREIGN KEY REFERENCES Image(fileName),
+	imageBack varchar(100) FOREIGN KEY REFERENCES Image(fileName),
 )
 
