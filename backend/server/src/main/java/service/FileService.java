@@ -48,14 +48,13 @@ public class FileService {
 		if (!TokenService.isValidToken(token))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to upload file!", null);
 		Map<String, Object> data_token = TokenService.getDataFromToken(token);
-		if (User.ROLE_CODE_STUDENT.equals((Integer)data_token.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)data_token.get("status")))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
+//		if (User.ROLE_CODE_STUDENT.equals((Integer)data_token.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)data_token.get("status")))
+//			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
 		if (file.isEmpty())
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File not found", null);
 		if (file.getSize() / (1e6) > 5.0)
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File too large (>5Mb)", null);
 		String fileExtension = FilenameUtils.getExtension(file.getOriginalFilename());
-		// TODO check file image or not and save with token
 		if (!isImage(fileExtension))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File is not image", null);
 		String fileNewName = UUID.randomUUID().toString().replace("-", "");
