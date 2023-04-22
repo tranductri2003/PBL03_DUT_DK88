@@ -48,7 +48,7 @@ public class DatabaseHelper {
 	
 	public void setQuery(String sql_query, HashMap<Integer, Object> params) {
 		try {
-			statement = connection.prepareStatement(sql_query);
+			statement = connection.prepareStatement(sql_query, Statement.RETURN_GENERATED_KEYS);
 			for (var me : params.entrySet()) {
 				if (me.getValue() instanceof Integer)
 					statement.setInt(me.getKey(), (int) me.getValue());
@@ -73,15 +73,15 @@ public class DatabaseHelper {
 		return null;
 	}
 	
-	public boolean updateData() {
+	public ResultSet updateData() {
 		try {
-		
-			return statement.executeUpdate() > 0;
+			statement.executeUpdate();
+			return statement.getGeneratedKeys();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return null;
 	}
 	
 }

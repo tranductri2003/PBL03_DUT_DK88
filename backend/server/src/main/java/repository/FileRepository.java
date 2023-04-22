@@ -20,7 +20,6 @@ public class FileRepository {
 			String userName = rs.getString("owner");
 			return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", userName);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 
 		}
 		return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
@@ -32,8 +31,7 @@ public class FileRepository {
 		params.put(1, fileName);
 		params.put(2, userName);
 		DatabaseHelper.getInstance().setQuery(insertImageSQL, params);
-		if (!DatabaseHelper.getInstance().updateData())
-			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
 	}
 	
