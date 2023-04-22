@@ -57,6 +57,16 @@ public class UserRepository {
 		return false;
 	}
 	
+	public static ResponseObject updateAccountStatus(String studentID, Integer status) {
+		String updateStatusSQL = "UPDATE Student SET status = ? WHERE studentID = ?";
+		HashMap<Integer, Object> params = new HashMap();
+		params.put(1, status);
+		params.put(2, studentID);
+		DatabaseHelper.getInstance().setQuery(updateStatusSQL, params);
+		DatabaseHelper.getInstance().updateData();
+		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account status update successfully!", null); 
+	}
+	
 	public static ResponseObject createAccount(User user, String hashPass) {
 		String createAccountSQL = "INSERT INTO NUser VALUES (?, ?, ?, ?, ?)";
 		HashMap<Integer, Object> params = new HashMap();
@@ -67,8 +77,7 @@ public class UserRepository {
 		params.put(4, user.getPhoneNumber());
 		params.put(5, user.getRoleCode());
 		DatabaseHelper.getInstance().setQuery(createAccountSQL, params);
-		if (!DatabaseHelper.getInstance().updateData())
-			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account successfully created!", null); 
 	}
 	
@@ -80,8 +89,7 @@ public class UserRepository {
 		params.put(2, student.getStudentID());
 		params.put(3, student.getStatus());
 		DatabaseHelper.getInstance().setQuery(createProfileSQL, params);
-		if (!DatabaseHelper.getInstance().updateData())
-			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account successfully created!", student);
 	}
 	
@@ -92,8 +100,7 @@ public class UserRepository {
 		params.put(1, admin.getUserName());
 		params.put(2, admin.getEmail());
 		DatabaseHelper.getInstance().setQuery(createProfileSQL, params);
-		if (!DatabaseHelper.getInstance().updateData())
-			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account successfully created!", admin);
 	}
 	
@@ -181,8 +188,7 @@ public class UserRepository {
 		params.put(1, newDoubleHashPass);
 		params.put(2, userName);
 		DatabaseHelper.getInstance().setQuery(updatePassSQL, params);
-		if (!DatabaseHelper.getInstance().updateData())
-			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Password update successfully!", null);
 	}
 	
@@ -194,8 +200,7 @@ public class UserRepository {
 		params.put(2, user.getPhoneNumber());
 		params.put(3, user.getUserName());
 		DatabaseHelper.getInstance().setQuery(updateUserInfoSQL, params);
-		if (!DatabaseHelper.getInstance().updateData())
-			return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+		DatabaseHelper.getInstance().updateData();
 		if (user.getRoleCode().equals(User.ROLE_CODE_ADMIN)) {
 			Admin admin = (Admin) user;
 			String updateAdminInfoSQL = "UPDATE Admin SET email = ? WHERE userName = ?";
@@ -203,8 +208,7 @@ public class UserRepository {
 			params.put(1, admin.getEmail());
 			params.put(2, admin.getUserName());
 			DatabaseHelper.getInstance().setQuery(updateUserInfoSQL, params);
-			if (!DatabaseHelper.getInstance().updateData())
-				return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
+			DatabaseHelper.getInstance().updateData();
 		}
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Public info update successfully!", null);
 	}

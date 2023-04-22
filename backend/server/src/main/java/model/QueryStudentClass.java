@@ -54,17 +54,5 @@ public class QueryStudentClass {
 	public void setWantClass(String wantClass) {
 		this.wantClass = wantClass;
 	}
-
-	@Override
-	public String toString() {
-		ObjectWriter ow = (ObjectWriter) new ObjectMapper().writer().withDefaultPrettyPrinter();
-		try {
-			return ow.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "";
-	}
 	
 }

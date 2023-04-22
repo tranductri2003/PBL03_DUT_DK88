@@ -17,6 +17,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import model.ResponseObject;
+import model.Student;
 import model.User;
 import repository.FileRepository;
 
@@ -47,6 +48,8 @@ public class FileService {
 		if (!TokenService.isValidToken(token))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to upload file!", null);
 		Map<String, Object> data_token = TokenService.getDataFromToken(token);
+		if (User.ROLE_CODE_STUDENT.equals((Integer)data_token.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)data_token.get("status")))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
 		if (file.isEmpty())
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "File not found", null);
 		if (file.getSize() / (1e6) > 5.0)
@@ -76,7 +79,9 @@ public class FileService {
 	public ResponseObject loadImage(String fileName, String token) {
 		if (!TokenService.isValidToken(token))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to load file!", null);
-//		Map<String, Object> token_data = TokenService.getDataFromToken(token);
+		Map<String, Object> token_data = TokenService.getDataFromToken(token);
+		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)token_data.get("status")))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
 //		ResponseObject tmp = FileRepository.getImageOwner(fileName);
 //		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
 //			return tmp;
@@ -105,6 +110,8 @@ public class FileService {
 			return tmp;
 		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")) && !token_data.get("userName").toString().equals(tmp.getData().toString()))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to delete file!", null);
+		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)token_data.get("status")))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
 		FileRepository.delImageIfExist(fileName);
 		Path file = PATH.resolve(fileName);
 		try {
