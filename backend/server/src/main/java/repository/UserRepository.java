@@ -3,6 +3,7 @@ package repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.Map;
 
 import model.Admin;
 import model.ResponseObject;
@@ -82,12 +83,13 @@ public class UserRepository {
 	}
 	
 	public static ResponseObject createStudentProfile(Student student) {
-		String createProfileSQL = "INSERT INTO Student VALUES (?, ?, ?)";
+		String createProfileSQL = "INSERT INTO Student VALUES (?, ?, ?, ?)";
 		HashMap<Integer, Object> params = new HashMap();
 		params.clear();
 		params.put(1, student.getUserName());
 		params.put(2, student.getStudentID());
-		params.put(3, student.getStatus());
+		params.put(3, student.getFacebook());
+		params.put(4, student.getStatus());
 		DatabaseHelper.getInstance().setQuery(createProfileSQL, params);
 		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account successfully created!", student);
@@ -146,6 +148,7 @@ public class UserRepository {
 				return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
 			while (rs.next()) {
 				student.setStudentID(rs.getString("studentID"));
+				student.setFacebook(rs.getString("facebook"));
 				student.setStatus(rs.getInt("status"));
 			}
 			return new ResponseObject(ResponseObject.RESPONSE_OK, "Login success!", student);
@@ -192,22 +195,34 @@ public class UserRepository {
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Password update successfully!", null);
 	}
 	
-	public static ResponseObject updatePublicInfo(User user) {
+	public static ResponseObject updatePublicInfo(Map<String, Object> data) {
 		String updateUserInfoSQL = "UPDATE NUser SET name = ?, phoneNumber = ? WHERE userName = ?";
 		HashMap<Integer, Object> params = new HashMap();
 		params.clear();
-		params.put(1, user.getName());
-		params.put(2, user.getPhoneNumber());
-		params.put(3, user.getUserName());
+		String userName = (String) data.get("userName");
+		String name = (String) data.get("name");
+		String phoneNumber = (String) data.get("phoneNumber");
+		Integer roleCode = (Integer) data.get("roleCode");
+		params.put(1, name);
+		params.put(2, phoneNumber);
+		params.put(3, userName);
 		DatabaseHelper.getInstance().setQuery(updateUserInfoSQL, params);
 		DatabaseHelper.getInstance().updateData();
-		if (user.getRoleCode().equals(User.ROLE_CODE_ADMIN)) {
-			Admin admin = (Admin) user;
+		if (roleCode.equals(User.ROLE_CODE_ADMIN)) {
+			String email = (String) data.get("email");
 			String updateAdminInfoSQL = "UPDATE Admin SET email = ? WHERE userName = ?";
 			params.clear();
-			params.put(1, admin.getEmail());
-			params.put(2, admin.getUserName());
-			DatabaseHelper.getInstance().setQuery(updateUserInfoSQL, params);
+			params.put(1, email);
+			params.put(2, userName);
+			DatabaseHelper.getInstance().setQuery(updateAdminInfoSQL, params);
+			DatabaseHelper.getInstance().updateData();
+		} else {
+			String facebook = (String) data.get("facebook");
+			String updateStudentInfoSQL = "UPDATE Student SET facebook = ? WHERE userName = ?";
+			params.clear();
+			params.put(1, facebook);
+			params.put(2, userName);
+			DatabaseHelper.getInstance().setQuery(updateStudentInfoSQL, params);
 			DatabaseHelper.getInstance().updateData();
 		}
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Public info update successfully!", null);

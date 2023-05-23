@@ -43,6 +43,8 @@ public class RequestController {
 	
 	@PostMapping("/Active")
 	ResponseEntity<ResponseObject> requestActive(@RequestHeader("token") String token, @RequestBody ActiveRequest request) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to send request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.saveRequest(request, token));
@@ -50,6 +52,8 @@ public class RequestController {
 	
 	@PostMapping("/Ban")
 	ResponseEntity<ResponseObject> requestBan(@RequestHeader("token") String token, @RequestBody BanRequest request) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to send request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.saveRequest(request, token));
@@ -57,6 +61,8 @@ public class RequestController {
 	
 	@GetMapping("/Page/{pageNumber}")
 	ResponseEntity<ResponseObject> readRequestByPage(@RequestHeader("token") String token, @PathVariable Integer pageNumber) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.readRequestByPage(token, pageNumber));
@@ -64,6 +70,8 @@ public class RequestController {
 	
 	@PostMapping("/Detail")
 	ResponseEntity<ResponseObject> readDetailRequest(@RequestHeader("token") String token, @RequestBody Request request) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.readRequestDetail(request, token));
@@ -71,6 +79,8 @@ public class RequestController {
 	
 	@PostMapping("/Handle")
 	ResponseEntity<ResponseObject> handleRequest(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to handle request!", null));
 		Integer requestID = Integer.parseInt(body.get("requestID").toString());
 		String targetID = body.get("targetID").toString();
 		Integer requestCode = Integer.parseInt(body.get("requestCode").toString());

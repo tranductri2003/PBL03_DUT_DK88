@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 public class Student extends User {
 
 	private String studentID;
+	private String facebook;
 	private Integer status;
 	
 	public static final Integer STATUS_NEW_USER = 0;
@@ -20,15 +21,17 @@ public class Student extends User {
 		super();
 	}
 	
-	public Student(String userName, String name, String phoneNumber, String studentID, Integer status) {
+	public Student(String userName, String name, String phoneNumber, String studentID, String facebook, Integer status) {
 		super(userName, name, phoneNumber, User.ROLE_CODE_STUDENT);
 		this.studentID = studentID;
+		this.facebook = facebook;
 		this.status = status;
 	}
 	
-	public Student(String userName, String name, String phoneNumber, String studentID) {
+	public Student(String userName, String name, String phoneNumber, String studentID, String facebook) {
 		super(userName, name, phoneNumber, User.ROLE_CODE_STUDENT);
 		this.studentID = studentID;
+		this.facebook = facebook;
 		this.status = STATUS_NEW_USER;
 	}
 
@@ -46,6 +49,14 @@ public class Student extends User {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getFacebook() {
+		return facebook;
+	}
+
+	public void setFacebook(String facebook) {
+		this.facebook = facebook;
 	}
 	
 	

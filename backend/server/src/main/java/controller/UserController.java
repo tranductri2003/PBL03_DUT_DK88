@@ -42,30 +42,31 @@ public class UserController {
 				body.get("userName").toString(), 
 				body.get("name").toString(),
 				body.get("phoneNumber").toString(),
-				body.get("studentID").toString()
+				body.get("studentID").toString(),
+				body.get("facebook").toString()
 		);
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(UserService.createStudentAccount(student, hashPass));
 	}
 	
-	@PostMapping("/CreateAccountAdmin")
-	ResponseEntity<ResponseObject> createAccountAdmin(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
-		String hashPass = (String) body.get("hashPass");
-		Admin admin = new Admin(
-				body.get("userName").toString(), 
-				body.get("name").toString(),
-				body.get("phoneNumber").toString(),
-				body.get("email").toString()
-		);
-		ResponseObject tmp = UserService.createAdminAccount(admin, hashPass, token);
-		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
-			return ResponseEntity.status(HttpStatus.OK).body(tmp);
-		return ResponseEntity
-				.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
-				.body(UserService.createAdminAccount(admin, hashPass, token));
-	}
+//	@PostMapping("/CreateAccountAdmin")
+//	ResponseEntity<ResponseObject> createAccountAdmin(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
+//		String hashPass = (String) body.get("hashPass");
+//		Admin admin = new Admin(
+//				body.get("userName").toString(), 
+//				body.get("name").toString(),
+//				body.get("phoneNumber").toString(),
+//				body.get("email").toString()
+//		);
+//		ResponseObject tmp = UserService.createAdminAccount(admin, hashPass, token);
+//		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
+//			return ResponseEntity.status(HttpStatus.OK).body(tmp);
+//		return ResponseEntity
+//				.status(HttpStatus.OK)
+//				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+//				.body(UserService.createAdminAccount(admin, hashPass, token));
+//	}
 	
 	@PostMapping("/Login")
 	ResponseEntity<ResponseObject> login(@RequestBody Map<String, Object> body) {
@@ -91,6 +92,8 @@ public class UserController {
 	
 	@PostMapping("/ChangePassword")
 	ResponseEntity<ResponseObject> changePassword(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to change password!", null));
 		String userName = (String) body.get("userName");
 		String oldHashPass = (String) body.get("oldHashPass");
 		String newHashPass = (String) body.get("newHashPass");
@@ -102,21 +105,12 @@ public class UserController {
 	
 	@PostMapping("/ChangePublicInfo")
 	ResponseEntity<ResponseObject> changePublicInfo(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
-		String userName = (String) body.get("userName");
-		String name = (String) body.get("name");
-		String phoneNumber = (String) body.get("phoneNumber");
-		Integer roleCode = (Integer) body.get("roleCode");
-		if (roleCode.equals(User.ROLE_CODE_ADMIN)) {
-			String email = (String) body.get("email");
-			return ResponseEntity
-					.status(HttpStatus.OK)
-					.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
-					.body(UserService.changePublicInfo(token, new Admin(userName, name, phoneNumber, email)));
-		}
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to change info!", null));
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
-				.body(UserService.changePublicInfo(token, new User(userName, name, phoneNumber, roleCode)));
+				.body(UserService.changePublicInfo(token, body));
 	}
 	
 }

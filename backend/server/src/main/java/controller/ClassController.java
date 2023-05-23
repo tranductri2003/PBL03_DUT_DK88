@@ -32,6 +32,8 @@ public class ClassController {
 	
 	@PostMapping("/ChangeClass")
 	ResponseEntity<ResponseObject> changeClass(@RequestHeader("token") String token, @RequestBody QueryStudentClass query) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to change class!", null));
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(ClassService.changeStudentClass(token, query));
@@ -39,6 +41,8 @@ public class ClassController {
 	
 	@GetMapping("/QueryClass/{idQuery}")
 	ResponseEntity<ResponseObject> getNewQuery(@RequestHeader("token") String token, @PathVariable Integer idQuery) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read class!", null));
 		return ResponseEntity.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(ClassService.readNewQueryClass(token, idQuery));

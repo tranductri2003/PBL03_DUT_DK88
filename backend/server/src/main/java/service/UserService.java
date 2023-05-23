@@ -101,15 +101,16 @@ public class UserService {
 		return UserRepository.updatePassword(userName, newDoubleHashPass);
 	}
 	
-	public static ResponseObject changePublicInfo(String token, User user) {
+	public static ResponseObject changePublicInfo(String token, Map<String, Object> data) {
 		if (!TokenService.isValidToken(token))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to change public info!", null);
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)token_data.get("status")))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
-		if (!user.getUserName().equals((String)token_data.get("userName")))
+		String userName = (String) data.get("userName");
+		if (!userName.equals((String)token_data.get("userName")))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to change public info!", null);
-		return UserRepository.updatePublicInfo(user);
+		return UserRepository.updatePublicInfo(data);
 	}
 	
 	
