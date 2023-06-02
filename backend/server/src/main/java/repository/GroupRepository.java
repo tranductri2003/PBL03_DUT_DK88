@@ -90,7 +90,7 @@ public class GroupRepository {
 			while (rs.next()) {
 				Boolean yes = rs.getBoolean("vote");
 				if (yes)
-					voteYes.add(rs.getString("groupID"));
+					voteYes.add(rs.getString("studentID"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
