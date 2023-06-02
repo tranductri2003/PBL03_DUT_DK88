@@ -21,7 +21,7 @@ public class GroupService {
 		List<List<String>> classHave = new ArrayList<>();
 		List<String> classWant = new ArrayList<>();
 		for (String studentID : students) {
-			if (!UserRepository.readStudentStatus(studentID).equals(Student.STATUS_ACTIVE_NOGROUP_USER)) return false;
+//			if (!UserRepository.readStudentStatus(studentID).equals(Student.STATUS_ACTIVE_NOGROUP_USER)) return false;
 			Map<String, Object> tmp = ClassRepository.readClassByStudentID(studentID);
 			classHave.add((List<String>) tmp.get("haveClass"));
 			classWant.add((String) tmp.get("wantClass"));
@@ -53,6 +53,7 @@ public class GroupService {
 			GroupRepository.insertGroupStudentClass(groupID, students.get(i), classWant.get(i));
 			GroupRepository.insertGroupStudentClass(groupID, students.get((i + 1) % students.size()), classWant.get(i));
 		}
+		
 	}
 	
 	public static void joinGroup(String studentID, String groupID) {
@@ -73,7 +74,9 @@ public class GroupService {
 		if (!isValidGroup(groupID))
 			return new ResponseObject(ResponseObject.RESPONSE_OUTDATE_DATA, "Group not exist, waiting to system refresh and try again!", null);
 		Group group = GroupRepository.readGroupByID(groupID);
-		group.setStatus(Math.max(group.getStatus(), Group.STATUS_NEW_GROUP));
+		//group.setStatus(Math.max(group.getStatus(), Group.STATUS_NEW_GROUP));
+		if (group.getStatus().equals(Group.STATUS_NOT_EXIST_YET_GROUP))
+			group.setStatus(Group.STATUS_NEW_GROUP);
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", group);
 	}
 	
