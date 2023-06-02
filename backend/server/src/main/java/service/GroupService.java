@@ -34,6 +34,8 @@ public class GroupService {
 	public static ResponseObject getJoinedGroupID(String token, String studentID) {
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		Integer studentStatus = UserRepository.readStudentStatus((String)token_data.get("studentID"));
+		if (!studentID.equals((String)token_data.get("studentID")))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to get joined group info!", null);
 		if (!User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) || Student.STATUS_BAN_USER.equals(studentStatus) || Student.STATUS_NEW_USER.equals(studentStatus))
 			return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", GroupRepository.readGroupIDByStudentID(studentID));

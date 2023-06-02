@@ -48,7 +48,8 @@ public class RequestService {
 		RequestRepository.delRequestIfExist(request);
 		if (!isAccepted) return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
 		if (request.getRequestCode().equals(Request.REQUEST_CODE_ACTIVE))
-			return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_ACTIVE_NOGROUP_USER);
+			if (UserRepository.readStudentStatus(request.getTargetID()).equals(Student.STATUS_NEW_USER))
+				return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_ACTIVE_NOGROUP_USER);
 		ClassRepository.delQueryByTargetID(request.getTargetID());
 		ClassRepository.insertResetQueryClass(request.getTargetID());
 		GroupService.leaveGroup(request.getTargetID());
