@@ -16,7 +16,7 @@ import repository.UserRepository;
 public class GroupService {
 	
 	public static Boolean isValidGroup(String groupID) {
-		List<String> students = Arrays.asList(groupID.split("^"));
+		List<String> students = Arrays.asList(groupID.split("-"));
 		if (students.size() > Group.MAX_SIZE || students.size() < 2) return false;
 		List<List<String>> classHave = new ArrayList<>();
 		List<String> classWant = new ArrayList<>();
@@ -41,7 +41,7 @@ public class GroupService {
 	
 	public static void createGroup(String groupID) {
 		GroupRepository.insertGroup(groupID);
-		List<String> students = Arrays.asList(groupID.split("^"));
+		List<String> students = Arrays.asList(groupID.split("-"));
 		List<String> classWant = new ArrayList<>();
 		for (String studentID : students) {
 			Map<String, Object> tmp = ClassRepository.readClassByStudentID(studentID);
@@ -79,7 +79,7 @@ public class GroupService {
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		String studentID = data.get("studentID");
 		String groupID = data.get("groupID");
-		List<String> students = Arrays.asList(groupID.split("^"));
+		List<String> students = Arrays.asList(groupID.split("-"));
 		if (!students.contains(studentID))
 			return new ResponseObject(ResponseObject.RESPONSE_OUTDATE_DATA, "You not allow to vote this group!", null);
 		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && !studentID.equals((String)token_data.get("studentID")))
