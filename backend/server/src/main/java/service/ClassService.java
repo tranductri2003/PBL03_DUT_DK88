@@ -17,6 +17,8 @@ public class ClassService {
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		if (!User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) || !Student.STATUS_ACTIVE_NOGROUP_USER.equals(UserRepository.readStudentStatus((String)token_data.get("studentID"))))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active or already join a group!", null);
+		if (!query.getTargetID().equals((String)token_data.get("studentID")))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your not allow to change class!", null);
 		Map<String, Object> tmp = ClassRepository.readClassByStudentID(query.getTargetID());
 		List<String> oldHaveClass = (List<String>) tmp.get("haveClass");
 		String oldWantClass = (String) tmp.get("wantClass");
