@@ -20,7 +20,7 @@ public class ClassService {
 		Map<String, Object> tmp = ClassRepository.readClassByStudentID(query.getTargetID());
 		List<String> oldHaveClass = (List<String>) tmp.get("haveClass");
 		String oldWantClass = (String) tmp.get("wantClass");
-		if (!oldWantClass.equals(query.getWantClass())) {
+		if (oldWantClass != null && !oldWantClass.equals(query.getWantClass())) {
 			for (String groupID : GroupRepository.groupInvole(query.getTargetID(), oldWantClass))
 				GroupRepository.delGroup(groupID);
 		}
