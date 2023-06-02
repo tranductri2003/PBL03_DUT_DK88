@@ -87,8 +87,6 @@ public class UserService {
 	public static ResponseObject changePassword(String token, String userName, String oldHashPass, String newHashPass) {
 		String oldDoubleHashPass = HashService.hash(oldHashPass);
 		String newDoubleHashPass = HashService.hash(newHashPass);
-		if (!TokenService.isValidToken(token))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to change password!", null);
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		ResponseObject tmp = UserRepository.readUser(userName, oldDoubleHashPass);
 		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
@@ -96,16 +94,16 @@ public class UserService {
 		User user = (User) tmp.getData();
 		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")) && !user.getUserName().equals((String)token_data.get("userName")))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to change password!", null);
-		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)token_data.get("status")))
+		Integer studentStatus = UserRepository.readStudentStatus((String)token_data.get("studentID"));
+		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && (Student.STATUS_BAN_USER.equals(studentStatus) || Student.STATUS_NEW_USER.equals(studentStatus)))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
 		return UserRepository.updatePassword(userName, newDoubleHashPass);
 	}
 	
 	public static ResponseObject changePublicInfo(String token, Map<String, Object> data) {
-		if (!TokenService.isValidToken(token))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to change public info!", null);
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
-		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && !Student.STATUS_ACTIVE_USER.equals((Integer)token_data.get("status")))
+		Integer studentStatus = UserRepository.readStudentStatus((String)token_data.get("studentID"));
+		if (User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) && (Student.STATUS_BAN_USER.equals(studentStatus) || Student.STATUS_NEW_USER.equals(studentStatus)))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
 		String userName = (String) data.get("userName");
 		if (!userName.equals((String)token_data.get("userName")))
@@ -113,5 +111,8 @@ public class UserService {
 		return UserRepository.updatePublicInfo(data);
 	}
 	
+	public static ResponseObject readStudentInfo(String studentID) {
+		return UserRepository.readPublicInfo(studentID);
+	}
 	
 }

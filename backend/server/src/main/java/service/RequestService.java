@@ -8,14 +8,13 @@ import model.Request;
 import model.ResponseObject;
 import model.Student;
 import model.User;
+import repository.ClassRepository;
 import repository.RequestRepository;
 import repository.UserRepository;
 
 public class RequestService {
 
 	public static ResponseObject saveRequest(Request request, String token) {
-		if (!TokenService.isValidToken(token))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to send request!", null);
 		ResponseObject tmp = RequestRepository.saveRequest(request);
 		if (tmp.getRespCode() != ResponseObject.RESPONSE_OK)
 			return tmp;
@@ -27,8 +26,6 @@ public class RequestService {
 	}
 	
 	public static ResponseObject readRequestByPage(String token, Integer pageNumber) {
-		if (!TokenService.isValidToken(token))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to read request!", null);
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to read request!", null);
@@ -36,8 +33,6 @@ public class RequestService {
 	}
 	
 	public static ResponseObject readRequestDetail(Request request, String token) {
-		if (!TokenService.isValidToken(token))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to read request!", null);
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to read request!", null);
@@ -47,15 +42,16 @@ public class RequestService {
 	}
 	
 	public static ResponseObject handleRequest(Request request, String token, Boolean isAccepted) {
-		if (!TokenService.isValidToken(token))
-			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Login again to handle request!", null);
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")))
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "You not allow to handle request!", null);
 		RequestRepository.delRequestIfExist(request);
 		if (!isAccepted) return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
 		if (request.getRequestCode().equals(Request.REQUEST_CODE_ACTIVE))
-			return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_ACTIVE_USER);
+			return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_ACTIVE_NOGROUP_USER);
+		ClassRepository.delQueryByTargetID(request.getTargetID());
+		ClassRepository.insertResetQueryClass(request.getTargetID());
+		GroupService.leaveGroup(request.getTargetID());
 		return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_BAN_USER);
 	}
 	

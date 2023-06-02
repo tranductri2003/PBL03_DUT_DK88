@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -81,7 +82,7 @@ public class UserController {
 		token_data.put("roleCode", user.getRoleCode());
 		if (user instanceof Student) {
 			Student student = (Student) user;
-			token_data.put("status", student.getStatus());
+//			token_data.put("status", student.getStatus());
 			token_data.put("studentID", student.getStudentID());
 		}
 		return ResponseEntity
@@ -111,6 +112,17 @@ public class UserController {
 				.status(HttpStatus.OK)
 				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.changePublicInfo(token, body));
+	}
+	
+	@GetMapping("/ReadPublicInfo/{studentID}")
+	ResponseEntity<ResponseObject> readPublicInfo(@RequestHeader("token") String token, @PathVariable("studentID") String studentID) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again get student info!", null));
+		
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+				.body(UserService.readStudentInfo(studentID));
 	}
 	
 }

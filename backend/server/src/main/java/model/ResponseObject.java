@@ -13,6 +13,7 @@ public class ResponseObject {
 	public static final int RESPONSE_REQUEST_ERROR = 1; 
 	public static final int RESPONSE_SYSTEM_ERROR = 2;
 	public static final int RESPONSE_TOKEN_EXPIRED = 3;
+	public static final int RESPONSE_OUTDATE_DATA = 4;
 	
 	public ResponseObject() {
 		super();

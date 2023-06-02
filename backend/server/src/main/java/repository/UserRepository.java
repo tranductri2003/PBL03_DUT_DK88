@@ -41,21 +41,21 @@ public class UserRepository {
 		return false;
 	}
 	
-	public static Boolean isStudentActive(String studentID) {
+	public static Integer readStudentStatus(String studentID) {
 		String checkStudentActiveSQL = "SELECT status FROM Student WHERE studentID = ?";
 		HashMap<Integer, Object> params = new HashMap();
 		params.put(1, studentID);
 		DatabaseHelper.getInstance().setQuery(checkStudentActiveSQL, params);
+		ResultSet tmp = DatabaseHelper.getInstance().readData();
 		try {
-			ResultSet tmp = DatabaseHelper.getInstance().readData();
 			tmp.next();
 			Integer status = tmp.getInt("status");
-			return status.equals(Student.STATUS_ACTIVE_USER);
+			return status;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return false;
+		return Student.STATUS_BAN_USER;
 	}
 	
 	public static ResponseObject updateAccountStatus(String studentID, Integer status) {
@@ -104,6 +104,42 @@ public class UserRepository {
 		DatabaseHelper.getInstance().setQuery(createProfileSQL, params);
 		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account successfully created!", admin);
+	}
+	
+	public static ResponseObject readPublicInfo(String studentID) {
+		Map<String, Object> data = new HashMap<>();
+		HashMap<Integer, Object> params = new HashMap();
+		String readStudentInfoSQL = "SELECT * FROM Student WHERE studentID = ?";
+		params.put(1, studentID);
+		DatabaseHelper.getInstance().setQuery(readStudentInfoSQL, params);
+		ResultSet rs = DatabaseHelper.getInstance().readData();
+		try {
+			if (!rs.isBeforeFirst())
+				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Student not found!", null);
+			String name = "", phoneNumber = "", facebook = "", userName = "";
+			while (rs.next()) {
+				userName = rs.getString("userName");
+				facebook = rs.getString("facebook");
+			}
+			String readUserInfoSQL = "SELECT * FROM NUser WHERE userName = ?";
+			params.clear();
+			params.put(1, userName);
+			DatabaseHelper.getInstance().setQuery(readUserInfoSQL, params);
+			rs = DatabaseHelper.getInstance().readData();
+			while (rs.next()) {
+				name = rs.getString("name");
+				phoneNumber = rs.getString("phoneNumber");
+			}
+			data.put("studentID", studentID);
+			data.put("name", name);
+			data.put("phoneNumber", phoneNumber);
+			data.put("facebook", facebook);
+			return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", data);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new ResponseObject(ResponseObject.RESPONSE_SYSTEM_ERROR, "Something wrong with database!", null);
 	}
 	
 	public static ResponseObject readUser(String userName, String doubleHashPass) {

@@ -13,6 +13,7 @@ CREATE TABLE Student
 (
 	userName varchar(100) PRIMARY KEY FOREIGN KEY REFERENCES NUser(userName),
 	studentID varchar(20) unique not null,
+	facebook varchar(100),
 	status int
 );
 
