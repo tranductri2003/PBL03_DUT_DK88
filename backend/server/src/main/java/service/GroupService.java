@@ -97,7 +97,7 @@ public class GroupService {
 			group.setStatus(group.STATUS_NEW_GROUP);
 		}
 		if (group.getVoteYes().contains(studentID)) {
-			group.getVoteYes().remove(groupID);
+			group.getVoteYes().remove(studentID);
 			leaveGroup(studentID);
 		} else {
 			group.getVoteYes().add(studentID);
@@ -111,6 +111,7 @@ public class GroupService {
 			for (String id : students)
 				leaveGroup(id);
 			group.setStatus(Group.STATUS_NEW_GROUP);
+			group.getVoteYes().clear();
 		}
 		GroupRepository.saveGroup(group);
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", null);
