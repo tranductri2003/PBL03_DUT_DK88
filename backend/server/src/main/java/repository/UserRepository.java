@@ -117,9 +117,11 @@ public class UserRepository {
 			if (!rs.isBeforeFirst())
 				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Student not found!", null);
 			String name = "", phoneNumber = "", facebook = "", userName = "";
+			Integer status = Student.STATUS_BAN_USER;
 			while (rs.next()) {
 				userName = rs.getString("userName");
 				facebook = rs.getString("facebook");
+				status = rs.getInt("status");
 			}
 			String readUserInfoSQL = "SELECT * FROM NUser WHERE userName = ?";
 			params.clear();
@@ -132,6 +134,7 @@ public class UserRepository {
 			}
 			data.put("studentID", studentID);
 			data.put("name", name);
+			data.put("status", status);
 			data.put("phoneNumber", phoneNumber);
 			data.put("facebook", facebook);
 			return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", data);

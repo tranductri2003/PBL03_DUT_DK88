@@ -91,6 +91,15 @@ public class GroupService {
 			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account not allow to vote!", null);
 		if (!isValidGroup(groupID))
 			return new ResponseObject(ResponseObject.RESPONSE_OUTDATE_DATA, "Group not exist, waiting to system refresh and try again!", null);
+		String oldGroupID = GroupRepository.readGroupIDByStudentID(studentID);
+		if (oldGroupID != null && GroupRepository.readGroupStatus(oldGroupID).equals(Group.STATUS_TRADE_GROUP) && !oldGroupID.equals(groupID))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Can't change group when trade course!", null);
+		if (oldGroupID != null && !oldGroupID.equals(groupID)) {
+			Group oldGroup = GroupRepository.readGroupByID(oldGroupID);
+			oldGroup.getVoteYes().remove(studentID);
+			GroupRepository.saveGroup(oldGroup);
+			leaveGroup(studentID);
+		}
 		Group group = GroupRepository.readGroupByID(groupID);
 		if (group.getStatus().equals(Group.STATUS_NOT_EXIST_YET_GROUP)) {
 			createGroup(groupID);

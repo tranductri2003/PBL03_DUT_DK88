@@ -156,6 +156,8 @@ public class GroupRepository {
 		return group;
 	}
 	
+	
+	
 	public static void saveGroup(Group group) {
 		
 		String updateGroupStatusSQL = "UPDATE NGroup SET status = ? WHERE groupID = ?";
