@@ -151,6 +151,7 @@ public class UserRepository {
 				name = rs.getString("name");
 				phoneNumber = rs.getString("phoneNumber");
 			}
+			data.put("userName", userName);
 			data.put("studentID", studentID);
 			data.put("name", name);
 			data.put("status", status);
