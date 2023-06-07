@@ -125,4 +125,24 @@ public class UserController {
 				.body(UserService.readStudentInfo(studentID));
 	}
 	
+	@GetMapping("/ReadAllStudentID")
+	ResponseEntity<ResponseObject> readAllStudentID(@RequestHeader("token") String token) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again get student info!", null));
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+				.body(UserService.readAllStudentID(token));
+	}
+	
+	@PostMapping("/ChangeStudentStatus")
+	ResponseEntity<ResponseObject> changeStudentStatus(@RequestHeader("token") String token, @RequestBody Map<String, Object> body) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again change student info!", null));
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
+				.body(UserService.changeUserStatus(token, (String)body.get("studentID"), (Integer)body.get("status")));
+	}
+	
 }

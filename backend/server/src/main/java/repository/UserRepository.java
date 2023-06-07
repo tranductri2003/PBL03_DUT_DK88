@@ -2,7 +2,9 @@ package repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import model.Admin;
@@ -12,7 +14,7 @@ import model.User;
 import service.HashService;
 
 public class UserRepository {
-	
+		
 	public static Boolean isUserExist(String userName) {
 		String checkUserExistSQL = "SELECT * FROM NUser WHERE userName = ?";
 		HashMap<Integer, Object> params = new HashMap();
@@ -104,6 +106,23 @@ public class UserRepository {
 		DatabaseHelper.getInstance().setQuery(createProfileSQL, params);
 		DatabaseHelper.getInstance().updateData();
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "Account successfully created!", admin);
+	}
+	
+	public static List<String> readAllStudentID() {
+		List<String> res = new ArrayList<>();
+		String readAllStudentIDSQL = "SELECT studentID FROM Student";
+		HashMap<Integer, Object> params = new HashMap();
+		DatabaseHelper.getInstance().setQuery(readAllStudentIDSQL, params);
+		ResultSet rs = DatabaseHelper.getInstance().readData();
+		try {
+			while (rs.next()) {
+				res.add(rs.getString("studentID"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 	
 	public static ResponseObject readPublicInfo(String studentID) {
