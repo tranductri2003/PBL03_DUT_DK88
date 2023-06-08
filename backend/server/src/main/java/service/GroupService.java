@@ -15,6 +15,8 @@ import repository.UserRepository;
 
 public class GroupService {
 	
+	public static final Integer MAX_GROUP_PER_PAGE = 11;
+	
 	public static Boolean isValidGroup(String groupID) {
 		List<String> students = Arrays.asList(groupID.split("-"));
 		if (students.size() > Group.MAX_SIZE || students.size() < 2) return false;
@@ -78,6 +80,26 @@ public class GroupService {
 		if (group.getStatus().equals(Group.STATUS_NOT_EXIST_YET_GROUP))
 			group.setStatus(Group.STATUS_NEW_GROUP);
 		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", group);
+	}
+	
+	public static ResponseObject readListGroupInfo(String token, List<String> listGroupID) {
+		Map<String, Object> token_data = TokenService.getDataFromToken(token);
+		Integer studentStatus = UserRepository.readStudentStatus((String)token_data.get("studentID"));
+		if (!User.ROLE_CODE_STUDENT.equals((Integer)token_data.get("roleCode")) || Student.STATUS_BAN_USER.equals(studentStatus) || Student.STATUS_NEW_USER.equals(studentStatus))
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Your account is not active!", null);
+		if (listGroupID.size() > MAX_GROUP_PER_PAGE)
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "!OK", null);
+		List<Group> listGroup = new ArrayList<>();
+		for (String groupID : listGroupID) {
+			if (!isValidGroup(groupID))
+				continue;
+			Group group = GroupRepository.readGroupByID(groupID);
+			//group.setStatus(Math.max(group.getStatus(), Group.STATUS_NEW_GROUP));
+			if (group.getStatus().equals(Group.STATUS_NOT_EXIST_YET_GROUP))
+				group.setStatus(Group.STATUS_NEW_GROUP);
+			listGroup.add(group);
+		}
+		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", listGroup);
 	}
 	
 	public static ResponseObject voteGroup(String token, Map<String, String> data) {

@@ -49,6 +49,14 @@ public class GroupController {
 				.body(GroupService.readGroupInfo(token, groupID));
 	}
 	
+	@PostMapping("/ListInfo")
+	ResponseEntity<ResponseObject> getListGroupInfo(@RequestHeader("token") String token, @RequestBody List<String> listGroupID) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read group data!", null));
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(GroupService.readListGroupInfo(token, listGroupID));
+	}
+	
 	@PostMapping("/VoteGroup")
 	ResponseEntity<ResponseObject> voteGroup(@RequestHeader("token") String token, @RequestBody Map<String, String> data) {
 		if (!TokenService.isValidToken(token))
