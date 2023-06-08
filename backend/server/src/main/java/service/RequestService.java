@@ -9,6 +9,7 @@ import model.ResponseObject;
 import model.Student;
 import model.User;
 import repository.ClassRepository;
+import repository.GroupRepository;
 import repository.RequestRepository;
 import repository.UserRepository;
 
@@ -52,7 +53,9 @@ public class RequestService {
 				return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_ACTIVE_NOGROUP_USER);
 		ClassRepository.delQueryByTargetID(request.getTargetID());
 		ClassRepository.insertResetQueryClass(request.getTargetID());
-		GroupService.leaveGroup(request.getTargetID());
+		String groupID = GroupRepository.readGroupIDByStudentID(request.getTargetID());
+		GroupRepository.delGroup(groupID);
+//		GroupService.leaveGroup(request.getTargetID());
 		return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_BAN_USER);
 	}
 	

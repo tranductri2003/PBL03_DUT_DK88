@@ -8,6 +8,7 @@ import model.ResponseObject;
 import model.Student;
 import model.User;
 import repository.ClassRepository;
+import repository.GroupRepository;
 import repository.UserRepository;
 
 public class UserService {
@@ -130,7 +131,8 @@ public class UserService {
 		if (status.equals(Student.STATUS_BAN_USER) || status.equals(Student.STATUS_NEW_USER)) {
 			ClassRepository.delQueryByTargetID(studentID);
 			ClassRepository.insertResetQueryClass(studentID);
-			GroupService.leaveGroup(studentID);
+			String groupID = GroupRepository.readGroupIDByStudentID(studentID);
+			GroupRepository.delGroup(groupID);
 		}
 		return UserRepository.updateAccountStatus(studentID, status);
 	}
