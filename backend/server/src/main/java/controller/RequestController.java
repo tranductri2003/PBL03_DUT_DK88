@@ -46,7 +46,6 @@ public class RequestController {
 		if (!TokenService.isValidToken(token))
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to send request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.saveRequest(request, token));
 	}
 	
@@ -55,7 +54,6 @@ public class RequestController {
 		if (!TokenService.isValidToken(token))
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to send request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.saveRequest(request, token));
 	}
 	
@@ -64,7 +62,6 @@ public class RequestController {
 		if (!TokenService.isValidToken(token))
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.readRequestByPage(token, pageNumber));
 	}
 	
@@ -73,7 +70,6 @@ public class RequestController {
 		if (!TokenService.isValidToken(token))
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read request!", null));
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.readRequestDetail(request, token));
 	}
 	
@@ -87,7 +83,6 @@ public class RequestController {
 		Request request = new Request(requestID, targetID, requestCode);
 		Boolean isAccepted = Boolean.parseBoolean(body.get("isAccepted").toString());
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(RequestService.handleRequest(request, token, isAccepted));
 	}
 	

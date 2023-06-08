@@ -100,7 +100,6 @@ public class UserController {
 		String newHashPass = (String) body.get("newHashPass");
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.changePassword(token, userName, oldHashPass, newHashPass));
 	}
 	
@@ -110,7 +109,6 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to change info!", null));
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.changePublicInfo(token, body));
 	}
 	
@@ -121,7 +119,6 @@ public class UserController {
 		
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.readStudentInfo(studentID));
 	}
 	
@@ -131,7 +128,6 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again get student info!", null));
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.readAllStudentID(token));
 	}
 	
@@ -141,7 +137,6 @@ public class UserController {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again change student info!", null));
 		return ResponseEntity
 				.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(UserService.changeUserStatus(token, (String)body.get("studentID"), (Integer)body.get("status")));
 	}
 	

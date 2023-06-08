@@ -23,7 +23,7 @@ public class TokenService {
 			+ "Tưởng rằng cứ thế sẽ ở bên một đời "
 			+ "Nhưng chỉ anh muốn thôi biết làm sao em hỡi..";
 	
-	private static final long EXPIRATION_TIME = 1000 * 60 * 10; // 10 minutes
+	private static final long EXPIRATION_TIME = 10082003; //~3 hours
 	
 	public static String generateToken(Map<String, Object> data) {
         Date now = new Date();

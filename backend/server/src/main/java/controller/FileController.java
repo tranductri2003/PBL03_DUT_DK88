@@ -32,7 +32,6 @@ public class FileController {
 		if (!TokenService.isValidToken(token))
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to upload file!", null));
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(FileService.getInstance().saveImage(file, token));
 	}
 	
@@ -41,7 +40,6 @@ public class FileController {
 		if (!TokenService.isValidToken(token))
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again to read file!", null));
 		return ResponseEntity.status(HttpStatus.OK)
-				.header("token", TokenService.generateToken(TokenService.getDataFromToken(token)))
 				.body(FileService.getInstance().loadImage(fileName, token));
 	}
 	
