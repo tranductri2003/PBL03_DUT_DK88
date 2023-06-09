@@ -55,7 +55,8 @@ public class RequestService {
 		ClassRepository.insertResetQueryClass(request.getTargetID());
 		String groupID = GroupRepository.readGroupIDByStudentID(request.getTargetID());
 		GroupRepository.delGroup(groupID);
-//		GroupService.leaveGroup(request.getTargetID());
+		for (String id : groupID.split("-"))
+			GroupService.leaveGroup(id);
 		return UserRepository.updateAccountStatus(request.getTargetID(), Student.STATUS_BAN_USER);
 	}
 	

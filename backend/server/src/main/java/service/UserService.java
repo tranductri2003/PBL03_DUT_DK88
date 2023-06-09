@@ -1,9 +1,12 @@
 package service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 import model.Admin;
+import model.Group;
 import model.ResponseObject;
 import model.Student;
 import model.User;
@@ -117,6 +120,18 @@ public class UserService {
 		return UserRepository.readPublicInfo(studentID);
 	}
 	
+	public static ResponseObject readListStudentInfo(List<String> listStudentID) {
+		if (listStudentID.size() > Group.MAX_SIZE)
+			return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Can't not read too much student info at a time!", null);
+		List<Map<String, Object>> res = new ArrayList<>();
+		for (String studentID : listStudentID) {
+			ResponseObject tmp = UserRepository.readPublicInfo(studentID);
+			if (tmp.getRespCode() == ResponseObject.RESPONSE_OK)
+				res.add((Map<String, Object>) tmp.getData());
+		}
+		return new ResponseObject(ResponseObject.RESPONSE_OK, "OK!", res);
+	}
+	
 	public static ResponseObject readAllStudentID(String token) {
 		Map<String, Object> token_data = TokenService.getDataFromToken(token);
 		if (!User.ROLE_CODE_ADMIN.equals((Integer)token_data.get("roleCode")))
@@ -133,6 +148,8 @@ public class UserService {
 			ClassRepository.insertResetQueryClass(studentID);
 			String groupID = GroupRepository.readGroupIDByStudentID(studentID);
 			GroupRepository.delGroup(groupID);
+			for (String id : groupID.split("-"))
+				GroupService.leaveGroup(id);
 		}
 		return UserRepository.updateAccountStatus(studentID, status);
 	}

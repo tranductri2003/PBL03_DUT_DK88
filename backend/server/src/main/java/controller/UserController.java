@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
@@ -120,6 +121,15 @@ public class UserController {
 		return ResponseEntity
 				.status(HttpStatus.OK)
 				.body(UserService.readStudentInfo(studentID));
+	}
+	
+	@PostMapping("/ReadListPublicInfo")
+	ResponseEntity<ResponseObject> readListPublicInfo(@RequestHeader("token") String token, @RequestBody List<String> listStudentID) {
+		if (!TokenService.isValidToken(token))
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(ResponseObject.RESPONSE_TOKEN_EXPIRED, "Login again change student info!", null));
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(UserService.readListStudentInfo(listStudentID));
 	}
 	
 	@GetMapping("/ReadAllStudentID")

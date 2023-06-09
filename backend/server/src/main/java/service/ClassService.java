@@ -23,14 +23,20 @@ public class ClassService {
 		List<String> oldHaveClass = (List<String>) tmp.get("haveClass");
 		String oldWantClass = (String) tmp.get("wantClass");
 		if (oldWantClass != null && !oldWantClass.equals(query.getWantClass())) {
-			for (String groupID : GroupRepository.groupInvole(query.getTargetID(), oldWantClass))
+			for (String groupID : GroupRepository.groupInvole(query.getTargetID(), oldWantClass)) {
 				GroupRepository.delGroup(groupID);
+				for (String id : groupID.split("-"))
+					GroupService.leaveGroup(id);
+			}
 		}
 		List<String> newClass = query.getHaveClass();
 		for (String classID : oldHaveClass) {
 			if (newClass.contains(classID)) continue;
-			for (String groupID : GroupRepository.groupInvole(query.getTargetID(), classID))
+			for (String groupID : GroupRepository.groupInvole(query.getTargetID(), classID)) {
 				GroupRepository.delGroup(groupID);
+				for (String id : groupID.split("-"))
+					GroupService.leaveGroup(id);
+			}
 		}
 		ClassRepository.delQueryByTargetID(query.getTargetID());
 		return ClassRepository.updateStudentClass(query);
