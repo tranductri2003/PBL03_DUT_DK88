@@ -117,6 +117,8 @@ public class GroupRepository {
 	
 	public static void delGroup(String groupID) {
 				
+		if (groupID == null) return;
+		
 		HashMap<Integer, Object> params = new HashMap<>();
 		params.put(1, groupID);
 		String delGroupStudentSQL = "DELETE FROM GroupStudent WHERE groupID = ?";

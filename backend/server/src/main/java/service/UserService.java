@@ -147,9 +147,17 @@ public class UserService {
 			ClassRepository.delQueryByTargetID(studentID);
 			ClassRepository.insertResetQueryClass(studentID);
 			String groupID = GroupRepository.readGroupIDByStudentID(studentID);
-			GroupRepository.delGroup(groupID);
-			for (String id : groupID.split("-"))
-				GroupService.leaveGroup(id);
+			if (groupID != null) {
+				GroupRepository.delGroup(groupID);
+				for (String id : groupID.split("-"))
+					GroupService.leaveGroup(id);
+			}
+		} else {
+			Integer oldStatus = UserRepository.readStudentStatus(studentID);
+			if (oldStatus.equals(Student.STATUS_BAN_USER) || oldStatus.equals(Student.STATUS_NEW_USER))
+				status = Student.STATUS_ACTIVE_NOGROUP_USER;
+			else
+				return new ResponseObject(ResponseObject.RESPONSE_REQUEST_ERROR, "Error!", null);
 		}
 		return UserRepository.updateAccountStatus(studentID, status);
 	}
